@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Gym Simulator Web (Next.js)
 
-## Getting Started
+Aplicação web para gestão de academia: cadastro de alunos, cadastro de aulas, agendamentos com regras de negócio de plano e capacidade, e relatórios simples por aluno.
 
-First, run the development server:
+### Tecnologias
+
+- Next.js 15 (App Router) + React
+- Tailwind CSS (com tema customizado roxo)
+- UI components (shadcn-like) em `src/components/ui`
+
+---
+
+## Como rodar
+
+### Pré-requisitos
+
+- Node.js 18+ (recomendado 20+)
+- npm 9+ (ou pnpm/yarn, se preferir)
+
+### 1) Instalar dependências
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2) Configurar variáveis de ambiente
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Crie um arquivo `.env.local` na raiz com a URL da API .NET (ou outro backend compatível):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+```
 
-## Learn More
+- Ajuste a porta/host conforme o seu backend.
+- O frontend usa apenas `NEXT_PUBLIC_API_URL` para consumir a API.
 
-To learn more about Next.js, take a look at the following resources:
+Aplicação ficará disponível em `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3) Build de produção
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+npm start
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estrutura de pastas (principal)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/`
+  - `layout.tsx`: layout global com sidebar responsiva e topbar mobile
+  - `page.tsx`: página inicial (hub) com métricas e atalhos
+  - `alunos/`: páginas de alunos (lista, novo, detalhes)
+  - `aulas/`: páginas de aulas (lista/criação) e `aulas/agendar` para agendamentos
+  - `relatorios/`: relatórios por aluno
+- `src/components/`
+  - `dashboard/sidebar.tsx`: navegação lateral
+  - `ui/`: componentes básicos (button, card, select, etc.)
+- `src/lib/`
+  - `api.ts`: cliente HTTP do backend (usa `NEXT_PUBLIC_API_URL`)
+  - `utils.ts`: utilidades
+- `src/types/`: tipos TypeScript compartilhados
+
+---
+
+## Funcionalidades
+
+### Cadastro de Alunos
+
+- Criar aluno com nome e plano (`Mensal`, `Trimestral`, `Anual`).
+- Páginas:
+  - `Alunos` (lista com resumo do mês por aluno)
+  - `Alunos > Novo Aluno` (formulário)
+  - `Alunos > Detalhes` (resumo do mês e preferências)
+
+### Cadastro de Aulas
+
+- Criar aula com:
+  - Tipo (ex.: Cross, Funcional, Pilates)
+  - Data/hora
+  - Duração (min)
+  - Capacidade máxima
+- Página `Aulas` lista próximas aulas e permite criar novas.
+
+### Agendamentos
+
+- `Aulas > Agendar`: seleciona Aluno + Aula disponível.
+- Regras de negócio aplicadas pelo backend:
+  - Respeitar capacidade máxima da aula
+  - Respeitar o limite de agendamentos por plano no mês:
+    - Mensal: até 12 aulas
+    - Trimestral: até 20 aulas
+    - Anual: até 30 aulas
+
+### Relatórios
+
+- `Relatórios`: seleção de aluno e exibição de:
+  - Total de aulas agendadas no mês
+  - Limite do plano e aulas restantes
+  - Tipos de aula mais frequentes
+
+---
+
+## Regras de Negócio (Resumo)
+
+- Um aluno não pode agendar mais aulas do que o plano permite no mês.
+- Uma aula não pode ultrapassar a capacidade máxima.
+- Um aluno pode ser agendado em várias aulas no mês, desde que dentro do limite do plano.
+
+---
