@@ -1,0 +1,148 @@
+// app/alunos/page.tsx
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api";
+import { Student, StudentReport } from "@/types";
+import { BarChart3, Plus } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+export default function StudentsPage() {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [reports, setReports] = useState<Map<number, StudentReport>>(new Map());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStudents();
+  }, []);
+
+  const loadStudents = async () => {
+    try {
+      const studentsData = await api.getStudents();
+      setStudents(studentsData);
+
+      // Carregar relatórios para cada aluno
+      const reportsMap = new Map();
+      for (const student of studentsData) {
+        try {
+          const report = await api.getStudentReport(student.id);
+          reportsMap.set(student.id, report);
+        } catch (error) {
+          console.error(
+            `Erro ao carregar relatório do aluno ${student.id}:`,
+            error
+          );
+        }
+      }
+      setReports(reportsMap);
+    } catch (error) {
+      console.error("Erro ao carregar alunos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPlanTypeColor = (planType: string) => {
+    switch (planType) {
+      case "Anual":
+        return "bg-green-100 text-green-800";
+      case "Trimestral":
+        return "bg-blue-100 text-blue-800";
+      case "Mensal":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  if (loading) {
+    return <div className="flex justify-center p-8">Carregando...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Alunos</h1>
+          <p className="text-gray-600">Gerencie os alunos da academia</p>
+        </div>
+        <Button asChild>
+          <Link href="/alunos/novo">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Aluno
+          </Link>
+        </Button>
+      </div>
+
+      <div className="grid gap-6">
+        {students.map((student) => {
+          const report = reports.get(student.id);
+          return (
+            <Card key={student.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      {student.name}
+                      <Badge
+                        variant="secondary"
+                        className={getPlanTypeColor(student.planType.name)}
+                      >
+                        {student.planType.name}
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {student.email} • {student.phone}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/alunos/${student.id}`}>
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Ver Detalhes
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {report && (
+                  <div className="grid grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <p className="font-medium">Limite Mensal</p>
+                      <p>{report.monthlyClassLimit} aulas</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Utilizadas</p>
+                      <p>{report.currentMonthClasses} aulas</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Disponíveis</p>
+                      <p
+                        className={
+                          report.remainingClasses <= 2
+                            ? "text-red-600 font-bold"
+                            : ""
+                        }
+                      >
+                        {report.remainingClasses} aulas
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Preferências</p>
+                      <p className="text-xs">
+                        {report.topClassTypes.slice(0, 2).join(", ") ||
+                          "Nenhuma aula"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
