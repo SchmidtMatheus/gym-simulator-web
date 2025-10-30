@@ -71,6 +71,8 @@ export default function RootLayout({
                   <Link href="/" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Início</Link>
                   <Link href="/alunos" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Alunos</Link>
                   <Link href="/aulas" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Aulas</Link>
+                  <Link href="/planos" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Planos</Link>
+                  <Link href="/tipos-aula" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Tipos de Aula</Link>
                   <Link href="/aulas/agendar" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Agendar</Link>
                   <Link href="/relatorios" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">Relatórios</Link>
                 </nav>

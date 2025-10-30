@@ -2,7 +2,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BarChart3, Calendar, Home, Users } from "lucide-react";
+import { BarChart3, Calendar, Home, Users, Layers, BadgePercent } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +10,8 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "Alunos", href: "/alunos", icon: Users },
   { name: "Aulas", href: "/aulas", icon: Calendar },
+  { name: "Planos", href: "/planos", icon: BadgePercent },
+  { name: "Tipos de Aula", href: "/tipos-aula", icon: Layers },
   { name: "Relatórios", href: "/relatorios", icon: BarChart3 },
 ];
 
