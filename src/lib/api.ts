@@ -71,7 +71,7 @@ class ApiClient {
       page: String(page),
       pageSize: String(pageSize)
     })
-    return this.request(`/classes/avaliable?${params.toString()}`);
+    return this.request(`/classes/list/available?${params.toString()}`);
   }
 
   async createClass(input: {
