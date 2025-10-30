@@ -14,13 +14,14 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      const [students, classes] = await Promise.all([
+      const [students, classes, avaliableClasses] = await Promise.all([
         api.getStudents(),
         api.getClasses(),
+        api.getAvaliableClasses(),
       ]);
       setTotalStudents(students.totalCount);
       setTotalClasses(classes.totalCount);
-      setActiveClasses(classes.items.filter((c) => c.maxCapacity > c.currentParticipants && !c.isCancelled).length);
+      setActiveClasses(avaliableClasses.totalCount);
     })();
   }, []);
 

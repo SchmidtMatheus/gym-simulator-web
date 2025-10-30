@@ -109,29 +109,13 @@ export default function StudentsPage() {
                 {report && (
                   <div className="grid grid-cols-4 gap-4 text-sm">
                     <div>
-                      <p className="font-medium">Limite Mensal</p>
-                      <p>{report.monthlyClassLimit} aulas</p>
-                    </div>
-                    <div>
                       <p className="font-medium">Utilizadas</p>
-                      <p>{report.currentMonthClasses} aulas</p>
-                    </div>
-                    <div>
-                      <p className="font-medium">Disponíveis</p>
-                      <p
-                        className={
-                          report.remainingClasses <= 2
-                            ? "text-red-600 font-bold"
-                            : ""
-                        }
-                      >
-                        {report.remainingClasses} aulas
-                      </p>
+                      <p>{report.totalClassesThisMonth} aulas</p>
                     </div>
                     <div>
                       <p className="font-medium">Preferências</p>
                       <p className="text-xs">
-                        {report.topClassTypes.slice(0, 2).join(", ") ||
+                        {report.mostFrequentClassTypes.slice(0, 2).join(", ") ||
                           "Nenhuma aula"}
                       </p>
                     </div>

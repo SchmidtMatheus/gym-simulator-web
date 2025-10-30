@@ -66,6 +66,14 @@ class ApiClient {
     return this.request(`/classes?${params.toString()}`);
   }
 
+  async getAvaliableClasses(page: number = 1, pageSize: number = 10): Promise<{ items: Class[], totalCount: number, pageNumber: number, pageSize: number }> {
+    const params = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize)
+    })
+    return this.request(`/classes/avaliable?${params.toString()}`);
+  }
+
   async createClass(input: {
     classTypeId?: string;
     classTypeName?: string;
@@ -127,6 +135,7 @@ class ApiClient {
   async getClassTypes(): Promise<AppClassType[]> {
     return this.request<AppClassType[]>("/class-types");
   }
+
   async createClassType(data: { name: string; description?: string }): Promise<AppClassType> {
     return this.request<AppClassType>("/class-types", {
       method: "POST",
@@ -145,7 +154,7 @@ class ApiClient {
 
   // Reports
   async getStudentReport(studentId: string): Promise<StudentReport> {
-    return this.request<StudentReport>(`/bookings/students/${studentId}/report`);
+    return this.request<StudentReport>(`/students/${studentId}/report`);
   }
 }
 

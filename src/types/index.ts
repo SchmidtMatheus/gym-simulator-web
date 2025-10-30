@@ -46,12 +46,10 @@ export interface Booking {
 export interface StudentReport {
   studentId: string;
   studentName: string;
-  planType: string;
-  monthlyClassLimit: number;
-  currentMonthClasses: number;
-  remainingClasses: number;
-  currentMonthYear: string;
-  topClassTypes: string[];
+  email: string;
+  totalClassesThisMonth: number;
+  mostFrequentClassTypes: ClassType[]
+  reportDate: string;
 }
 
 export interface CreateBookingRequest {

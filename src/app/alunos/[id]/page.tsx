@@ -43,16 +43,8 @@ export default function StudentDetailsPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div>
-            <p className="font-medium">Limite Mensal</p>
-            <p>{report?.monthlyClassLimit} aulas</p>
-          </div>
-          <div>
-            <p className="font-medium">Agendadas</p>
-            <p>{report?.currentMonthClasses} aulas</p>
-          </div>
-          <div>
-            <p className="font-medium">Restantes</p>
-            <p>{report?.remainingClasses} aulas</p>
+            <p className="font-medium">Quantidade</p>
+            <p>{report?.totalClassesThisMonth} aulas</p>
           </div>
         </CardContent>
       </Card>
@@ -62,15 +54,7 @@ export default function StudentDetailsPage() {
           <CardTitle>Preferências de Aulas</CardTitle>
         </CardHeader>
         <CardContent>
-          {report?.topClassTypes?.length ? (
-            <div className="flex gap-2 flex-wrap">
-              {report.topClassTypes.map((t) => (
-                <Badge key={t}>{t}</Badge>
-              ))}
-            </div>
-          ) : (
             <p className="text-sm text-gray-600">Sem dados ainda.</p>
-          )}
         </CardContent>
       </Card>
     </div>

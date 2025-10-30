@@ -37,10 +37,10 @@ export default function SchedulePage() {
     try {
       const [students, classes] = await Promise.all([
         api.getStudents(),
-        api.getClasses(),
+        api.getAvaliableClasses(),
       ]);
       setStudents(students.items);
-      setClasses(classes.items.filter((c) => c.maxCapacity > c.currentParticipants && !c.isCancelled));
+      setClasses(classes.items);
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
     } finally {
