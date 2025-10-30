@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [reports, setReports] = useState<Map<number, StudentReport>>(new Map());
+  const [reports, setReports] = useState<Map<string, StudentReport>>(new Map());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +24,6 @@ export default function StudentsPage() {
       const studentsData = await api.getStudents();
       setStudents(studentsData.items);
 
-      // Carregar relatórios para cada aluno
       const reportsMap = new Map();
       for (const student of studentsData.items) {
         try {

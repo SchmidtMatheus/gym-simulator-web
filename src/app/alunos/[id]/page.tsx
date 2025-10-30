@@ -4,10 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { Student, StudentReport } from "@/types";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function StudentDetailsPage({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export default function StudentDetailsPage() {
+  const { id } = useParams();
   const [student, setStudent] = useState<Student | null>(null);
   const [report, setReport] = useState<StudentReport | null>(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,8 @@ export default function StudentDetailsPage({ params }: { params: { id: string } 
   useEffect(() => {
     async function load() {
       try {
-        const [s, r] = await Promise.all([api.getStudent(id), api.getStudentReport(id)]);
+        const [s, r] = await Promise.all([api.getStudent(`${id}`),
+        api.getStudentReport(`${id}`)]);
         setStudent(s);
         setReport(r);
       } finally {
@@ -32,7 +34,7 @@ export default function StudentDetailsPage({ params }: { params: { id: string } 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">{student.name}</h1>
-        <Badge variant="secondary">{student.planType.name}</Badge>
+        <Badge variant="secondary">{student.planTypeName}</Badge>
       </div>
 
       <Card>

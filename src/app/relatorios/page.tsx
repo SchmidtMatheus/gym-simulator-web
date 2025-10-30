@@ -13,12 +13,12 @@ export default function ReportsPage() {
   const [report, setReport] = useState<StudentReport | null>(null);
 
   useEffect(() => {
-    api.getStudents().then(setStudents);
+    api.getStudents().then(response => setStudents(response.items));
   }, []);
 
   useEffect(() => {
     if (!selected) return;
-    api.getStudentReport(parseInt(selected)).then(setReport);
+    api.getStudentReport(selected).then(setReport);
   }, [selected]);
 
   return (

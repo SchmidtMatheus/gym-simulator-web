@@ -1,5 +1,5 @@
 export interface Student {
-  id: number;
+  id: string;
   name: string;
   email?: string;
   phone?: string;
@@ -8,21 +8,21 @@ export interface Student {
 }
 
 export interface PlanType {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   monthlyClassLimit: number;
 }
 
 export interface ClassType {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   intensityLevel?: number;
 }
 
 export interface Class {
-  id: number;
+  id: string;
   classTypeName: string;
   scheduledAt: string;
   durationMinutes: number;
@@ -33,7 +33,7 @@ export interface Class {
 }
 
 export interface Booking {
-  id: number;
+  id: string;
   studentId: number;
   classId: number;
   status: BookingStatus;
@@ -44,7 +44,7 @@ export interface Booking {
 }
 
 export interface StudentReport {
-  studentId: number;
+  studentId: string;
   studentName: string;
   planType: string;
   monthlyClassLimit: number;
@@ -55,14 +55,14 @@ export interface StudentReport {
 }
 
 export interface CreateBookingRequest {
-  studentId: number;
-  classId: number;
+  studentId: string;
+  classId: string;
 }
 
 export interface BookingResult {
   success: boolean;
   message: string;
-  bookingId?: number;
+  bookingId?: string;
 }
 
 export enum BookingStatus {

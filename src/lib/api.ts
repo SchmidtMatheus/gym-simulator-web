@@ -41,7 +41,7 @@ class ApiClient {
     return this.request(`/students?${params.toString()}`);
   }
 
-  async getStudent(id: number): Promise<Student> {
+  async getStudent(id: string): Promise<Student> {
     return this.request<Student>(`/students/${id}`);
   }
 
@@ -144,7 +144,7 @@ class ApiClient {
   }
 
   // Reports
-  async getStudentReport(studentId: number): Promise<StudentReport> {
+  async getStudentReport(studentId: string): Promise<StudentReport> {
     return this.request<StudentReport>(`/bookings/students/${studentId}/report`);
   }
 }

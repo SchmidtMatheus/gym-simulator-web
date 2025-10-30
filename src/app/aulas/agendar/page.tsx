@@ -57,8 +57,8 @@ export default function SchedulePage() {
 
     try {
       const result = await api.createBooking({
-        studentId: parseInt(selectedStudent),
-        classId: parseInt(selectedClass),
+        studentId: selectedStudent,
+        classId: selectedClass,
       });
 
       setResult({
