@@ -7,13 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-const PLAN_OPTIONS = [
-  { id: 1, name: 'Mensal' },
-  { id: 2, name: 'Trimestral' },
-  { id: 3, name: 'Anual' },
-];
+import { useEffect, useState } from "react";
+import { PlanType } from "@/types";
 
 export default function NewStudentPage() {
   const router = useRouter();
@@ -22,6 +17,15 @@ export default function NewStudentPage() {
   const [phone, setPhone] = useState("");
   const [plan, setPlan] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+  const [planOptions, setPlanOptions] = useState<PlanType[]>([]);
+
+  useEffect(() => {
+    api.getPlanTypes().then((options) => {
+      setPlanOptions(options);
+      setLoadingPlans(false);
+    });
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,11 +35,9 @@ export default function NewStudentPage() {
       await api.createStudent({
         name,
         planTypeId: parseInt(plan),
-        // @ts-ignore
         email,
-        // @ts-ignore
         phone,
-      } as any);
+      });
       router.push('/alunos');
     } finally {
       setSubmitting(false);
@@ -70,12 +72,12 @@ export default function NewStudentPage() {
             </div>
             <div className="space-y-2">
               <Label>Plano</Label>
-              <Select value={plan} onValueChange={setPlan}>
+              <Select value={plan} onValueChange={setPlan} disabled={loadingPlans}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um plano" />
+                  <SelectValue placeholder={loadingPlans ? "Carregando planos..." : "Selecione um plano"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {PLAN_OPTIONS.map((p) => (
+                  {planOptions.map((p) => (
                     <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
                   ))}
                 </SelectContent>

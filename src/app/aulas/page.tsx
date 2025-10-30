@@ -4,17 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { api } from "@/lib/api";
-import { Class } from "@/types";
+import { ClassType as AppClassType, Class } from "@/types";
 import { Calendar, PlusCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ClassesPage() {
   const [classes, setClasses] = useState<Class[]>([]);
+  const [classTypes, setClassTypes] = useState<AppClassType[]>([]);
   const [loading, setLoading] = useState(true);
-
   // form state
-  const [typeName, setTypeName] = useState("");
+  const [classTypeId, setClassTypeId] = useState<string>("");
   const [dateTime, setDateTime] = useState("");
   const [duration, setDuration] = useState(60);
   const [capacity, setCapacity] = useState(10);
@@ -22,6 +23,7 @@ export default function ClassesPage() {
 
   useEffect(() => {
     load();
+    loadClassTypes();
   }, []);
 
   async function load() {
@@ -34,19 +36,24 @@ export default function ClassesPage() {
     }
   }
 
+  async function loadClassTypes() {
+    const types = await api.getClassTypes();
+    setClassTypes(types);
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!typeName || !dateTime) return;
+    if (!classTypeId || !dateTime) return;
     setSubmitting(true);
     try {
-      // @ts-ignore - method available in mock API
       await api.createClass({
-        classTypeName: typeName,
+        classTypeId: classTypeId.toUpperCase(),
         scheduledAt: new Date(dateTime).toISOString(),
         durationMinutes: duration,
         maxCapacity: capacity,
+        isActive: true,
       });
-      setTypeName("");
+      setClassTypeId("");
       setDateTime("");
       setDuration(60);
       setCapacity(10);
@@ -81,11 +88,16 @@ export default function ClassesPage() {
             <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Tipo da aula</Label>
-                <Input
-                  value={typeName}
-                  onChange={(e) => setTypeName(e.target.value)}
-                  placeholder="Cross, Funcional, Pilates..."
-                />
+                <Select value={classTypeId} onValueChange={setClassTypeId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Escolha o tipo de aula" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classTypes.map((type) => (
+                      <SelectItem value={type.id.toString()} key={type.id}>{type.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Data e hora</Label>
@@ -116,7 +128,7 @@ export default function ClassesPage() {
                   />
                 </div>
               </div>
-              <Button type="submit" disabled={submitting || !typeName || !dateTime}>
+              <Button type="submit" disabled={submitting || !classTypeId || !dateTime}>
                 {submitting ? 'Criando...' : 'Criar Aula'}
               </Button>
             </form>
