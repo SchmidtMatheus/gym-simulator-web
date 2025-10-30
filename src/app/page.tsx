@@ -14,15 +14,13 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const [students, classes] = await Promise.all([
-          api.getStudents(),
-          api.getClasses(),
-        ]);
-        setTotalStudents(students.totalCount);
-        setTotalClasses(classes.length);
-        setActiveClasses(classes.filter((c) => !c.isCancelled).length);
-      } catch {}
+      const [students, classes] = await Promise.all([
+        api.getStudents(),
+        api.getClasses(),
+      ]);
+      setTotalStudents(students.totalCount);
+      setTotalClasses(classes.totalCount);
+      setActiveClasses(classes.items.filter((c) => c.maxCapacity > c.currentParticipants && !c.isCancelled).length);
     })();
   }, []);
 
@@ -74,13 +72,13 @@ export default function Home() {
             <Card className="bg-white/80 backdrop-blur border border-gray-200 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Aulas Ativas
+                  Aulas Disponíveis
                 </CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{activeClasses}</div>
-                <p className="text-xs text-muted-foreground">Não canceladas</p>
+                <p className="text-xs text-muted-foreground">Não canceladas e com vagas</p>
               </CardContent>
             </Card>
           </div>
@@ -92,7 +90,7 @@ export default function Home() {
             <Link href="/alunos">
               <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
+                  <CardTitle className="flex items-center gap-2 text-purple-700">
                     <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
                       <Users className="h-4 w-4" />
                     </span>
@@ -109,8 +107,8 @@ export default function Home() {
             <Link href="/aulas">
               <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
+                  <CardTitle className="flex items-center gap-2 text-purple-700">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
                       <Calendar className="h-4 w-4" />
                     </span>
                     Aulas
@@ -126,8 +124,8 @@ export default function Home() {
             <Link href="/aulas/agendar">
               <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
+                  <CardTitle className="flex items-center gap-2 text-purple-700">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
                       <PlusCircle className="h-4 w-4" />
                     </span>
                     Agendar
@@ -143,8 +141,8 @@ export default function Home() {
             <Link href="/relatorios">
               <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
+                  <CardTitle className="flex items-center gap-2 text-purple-700">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
                       <BarChart3 className="h-4 w-4" />
                     </span>
                     Relatórios

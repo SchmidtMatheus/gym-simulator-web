@@ -58,12 +58,12 @@ class ApiClient {
   }
 
   // Classes
-  async getClasses(): Promise<Class[]> {
-    return this.request<Class[]>("/classes");
-  }
-
-  async getAvailableClasses(): Promise<Class[]> {
-    return this.request<Class[]>("/classes/available");
+  async getClasses(page: number = 1, pageSize: number = 10): Promise<{ items: Class[], totalCount: number, pageNumber: number, pageSize: number }> {
+    const params = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize)
+    })
+    return this.request(`/classes?${params.toString()}`);
   }
 
   async createClass(input: {
@@ -95,12 +95,6 @@ class ApiClient {
     });
   }
 
-  // Reports
-  async getStudentReport(studentId: number): Promise<StudentReport> {
-    return this.request<StudentReport>(`/bookings/students/${studentId}/report`);
-  }
-
-  // Bookings (novo, paginado)
   async getBookings(page: number = 1, pageSize: number = 10): Promise<{ data: BookingResult[], totalCount: number, pageNumber: number, pageSize: number }> {
     const params = new URLSearchParams({
       page: String(page),
@@ -147,6 +141,11 @@ class ApiClient {
   }
   async deleteClassType(id: number): Promise<void> {
     return this.request<void>(`/class-types/${id}`, { method: "DELETE" });
+  }
+
+  // Reports
+  async getStudentReport(studentId: number): Promise<StudentReport> {
+    return this.request<StudentReport>(`/bookings/students/${studentId}/report`);
   }
 }
 

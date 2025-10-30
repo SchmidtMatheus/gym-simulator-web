@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/api";
 import { Class, Student } from "@/types";
@@ -35,12 +35,12 @@ export default function SchedulePage() {
 
   const loadData = async () => {
     try {
-      const [studentsData, classesData] = await Promise.all([
+      const [students, classes] = await Promise.all([
         api.getStudents(),
-        api.getAvailableClasses(),
+        api.getClasses(),
       ]);
-      setStudents(studentsData);
-      setClasses(classesData.filter((c) => !c.isCancelled));
+      setStudents(students.items);
+      setClasses(classes.items.filter((c) => c.maxCapacity > c.currentParticipants && !c.isCancelled));
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
     } finally {
@@ -69,7 +69,6 @@ export default function SchedulePage() {
       if (result.success) {
         setSelectedStudent("");
         setSelectedClass("");
-        // Recarregar aulas para atualizar capacidade
         loadData();
       }
     } catch (error) {
@@ -123,7 +122,7 @@ export default function SchedulePage() {
                         key={student.id}
                         value={student.id.toString()}
                       >
-                        {student.name} - {student.planType.name}
+                        {student.name} - {student.planTypeName}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -144,7 +143,7 @@ export default function SchedulePage() {
                       >
                         <div className="flex justify-between w-full">
                           <span>
-                            {classItem.classType.name} -{" "}
+                            {classItem.classTypeName} -{" "}
                             {new Date(classItem.scheduledAt).toLocaleString()}
                           </span>
                           <Badge
@@ -170,11 +169,10 @@ export default function SchedulePage() {
 
               {result && (
                 <div
-                  className={`flex items-center gap-2 p-3 rounded-md ${
-                    result.success
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
+                  className={`flex items-center gap-2 p-3 rounded-md ${result.success
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                    }`}
                 >
                   {result.success ? (
                     <CheckCircle className="h-4 w-4" />
@@ -203,14 +201,14 @@ export default function SchedulePage() {
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-500" />
                       <span className="font-medium">
-                        {classItem.classType.name}
+                        {classItem.classTypeName}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">
                       {new Date(classItem.scheduledAt).toLocaleString("pt-BR")}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Duração: {classItem.durationMinutes}min
+                      Duração: {classItem.durationMinutes} min
                     </p>
                   </div>
                   <div className="text-right">
@@ -225,19 +223,19 @@ export default function SchedulePage() {
                         classItem.currentParticipants >= classItem.maxCapacity
                           ? "destructive"
                           : classItem.maxCapacity -
-                              classItem.currentParticipants <=
+                            classItem.currentParticipants <=
                             2
-                          ? "secondary"
-                          : "default"
+                            ? "secondary"
+                            : "default"
                       }
                     >
                       {classItem.currentParticipants >= classItem.maxCapacity
                         ? "Lotada"
                         : classItem.maxCapacity -
-                            classItem.currentParticipants <=
+                          classItem.currentParticipants <=
                           2
-                        ? "Quase Lotada"
-                        : "Com Vagas"}
+                          ? "Quase Lotada"
+                          : "Com Vagas"}
                     </Badge>
                   </div>
                 </div>

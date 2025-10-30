@@ -89,9 +89,9 @@ export default function StudentsPage() {
                       {student.name}
                       <Badge
                         variant="secondary"
-                        className={getPlanTypeColor(student.planType.name)}
+                        className={getPlanTypeColor(student.planTypeName)}
                       >
-                        {student.planType.name}
+                        {student.planTypeName}
                       </Badge>
                     </CardTitle>
                     <p className="text-sm text-gray-600 mt-1">

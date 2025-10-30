@@ -3,10 +3,7 @@ export interface Student {
   name: string;
   email?: string;
   phone?: string;
-  planTypeId: number;
-  planType: PlanType;
-  monthlyClassCount: number;
-  currentMonthYear: string;
+  planTypeName: string;
   isActive: boolean;
 }
 
@@ -26,12 +23,12 @@ export interface ClassType {
 
 export interface Class {
   id: number;
-  classTypeId: number;
-  classType: ClassType;
+  classTypeName: string;
   scheduledAt: string;
   durationMinutes: number;
   maxCapacity: number;
   currentParticipants: number;
+  isActive: boolean;
   isCancelled: boolean;
 }
 

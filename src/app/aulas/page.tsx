@@ -30,7 +30,7 @@ export default function ClassesPage() {
     setLoading(true);
     try {
       const data = await api.getClasses();
-      setClasses(data);
+      setClasses(data.items);
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function ClassesPage() {
     setSubmitting(true);
     try {
       await api.createClass({
-        classTypeId: classTypeId.toUpperCase(),
+        classTypeId: classTypeId,
         scheduledAt: new Date(dateTime).toISOString(),
         durationMinutes: duration,
         maxCapacity: capacity,
@@ -94,7 +94,7 @@ export default function ClassesPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {classTypes.map((type) => (
-                      <SelectItem value={type.id.toString()} key={type.id}>{type.name}</SelectItem>
+                      <SelectItem value={type.id.toString()} key={type.id}>{type?.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -146,7 +146,7 @@ export default function ClassesPage() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-500" />
-                      <span className="font-medium">{c.classType.name}</span>
+                      <span className="font-medium">{c.classTypeName ?? "N/A"}</span>
                     </div>
                     <p className="text-sm text-gray-600">{new Date(c.scheduledAt).toLocaleString('pt-BR')}</p>
                     <p className="text-xs text-gray-500">Duração: {c.durationMinutes}min</p>
