@@ -19,7 +19,7 @@ export default function Home() {
           api.getStudents(),
           api.getClasses(),
         ]);
-        setTotalStudents(students.length);
+        setTotalStudents(students.totalCount);
         setTotalClasses(classes.length);
         setActiveClasses(classes.filter((c) => !c.isCancelled).length);
       } catch {}
@@ -90,7 +90,7 @@ export default function Home() {
           <Badge className="uppercase tracking-wide">Acesso rápido</Badge>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <Link href="/alunos">
-              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-gradient-to-b from-white to-gray-50">
+              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-700">
                     <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
@@ -107,7 +107,7 @@ export default function Home() {
               </Card>
             </Link>
             <Link href="/aulas">
-              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-gradient-to-b from-white to-gray-50">
+              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-700">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
@@ -124,7 +124,7 @@ export default function Home() {
               </Card>
             </Link>
             <Link href="/aulas/agendar">
-              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-gradient-to-b from-white to-gray-50">
+              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-700">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">
@@ -141,7 +141,7 @@ export default function Home() {
               </Card>
             </Link>
             <Link href="/relatorios">
-              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-gradient-to-b from-white to-gray-50">
+              <Card className="cursor-pointer h-full border border-transparent hover:border-purple-200 hover:shadow-lg transition-all bg-linear-to-b from-white to-gray-50">
                 <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-700">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50">

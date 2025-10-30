@@ -22,11 +22,11 @@ export default function StudentsPage() {
   const loadStudents = async () => {
     try {
       const studentsData = await api.getStudents();
-      setStudents(studentsData);
+      setStudents(studentsData.items);
 
       // Carregar relatórios para cada aluno
       const reportsMap = new Map();
-      for (const student of studentsData) {
+      for (const student of studentsData.items) {
         try {
           const report = await api.getStudentReport(student.id);
           reportsMap.set(student.id, report);
