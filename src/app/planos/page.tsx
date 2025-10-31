@@ -4,50 +4,62 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
+import { PlanType } from "@/types";
 
-export default function PlanosPage() {
-  const [planos, setPlanos] = useState([]);
+export default function PlansPage() {
+  const [plans, setPlans] = useState<PlanType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [editandoId, setEditandoId] = useState(null);
-  const [editNome, setEditNome] = useState("");
-  const [editDescricao, setEditDescricao] = useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [classLimit, setClassLimit] = useState(0);
+  const [editingId, setEditingId] = useState<string>("");
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editClassLimit, setEditClassLimit] = useState(0);
+
   
   useEffect(() => {
-    carregarPlanos();
+    loadPlanTypes();
   }, []);
 
-  async function carregarPlanos() {
+  async function loadPlanTypes() {
     setLoading(true);
     const data = await api.getPlanTypes();
-    setPlanos(data);
+    setPlans(data);
     setLoading(false);
   }
 
-  async function handleSubmit(e) {
+  interface NewPlanType {
+    name: string;
+    description?: string;
+    classLimit: number;
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
-    await api.createPlanType({ name: nome, description: descricao });
-    setNome(""); setDescricao("");
-    carregarPlanos();
+    const payload: NewPlanType = { name: name, description: description, classLimit: 0 };
+    await api.createPlanType(payload);
+    setName(""); setDescription(""); setClassLimit(0);
+    loadPlanTypes();
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(id: string) {
     await api.deletePlanType(id);
-    carregarPlanos();
+    loadPlanTypes();
   }
 
-  async function handleEdit(id) {
-    setEditandoId(id);
-    const plano = planos.find(p => p.id === id);
-    setEditNome(plano.name);
-    setEditDescricao(plano.description || "");
+  async function handleEdit(id: string) {
+    setEditingId(id);
+    const plan = plans.find(p => p.id === id);
+    setEditName(plan?.name ?? "");
+    setEditDescription(plan?.description || "");
+    setEditClassLimit(plan?.classLimit || 0);
   }
 
-  async function salvarEdicao(id) {
-    await api.updatePlanType(id, { name: editNome, description: editDescricao });
-    setEditandoId(null);
-    carregarPlanos();
+  async function saveEdition(id: string) {
+    await api.updatePlanType(id, { name: editName, description: editDescription, classLimit: editClassLimit });
+    setEditingId("");
+    loadPlanTypes();
   }
 
   if (loading) return <div className="p-6">Carregando...</div>;
@@ -61,29 +73,32 @@ export default function PlanosPage() {
         </div>
       </div>
       <form onSubmit={handleSubmit} className="flex gap-2">
-        <Input placeholder="Nome do plano" value={nome} onChange={e=>setNome(e.target.value)} required />
-        <Input placeholder="Descrição" value={descricao} onChange={e=>setDescricao(e.target.value)} />
+        <Input placeholder="Nome do plano" value={name} onChange={e=>setName(e.target.value)} required />
+        <Input placeholder="Descrição" value={description} onChange={e=>setDescription(e.target.value)} />
+        <Input placeholder="Limite de aulas" value={classLimit} type="number" onChange={e=>setClassLimit(parseInt(e.target.value))} />
         <Button type="submit">Adicionar Plano</Button>
       </form>
       <div className="grid gap-6">
-        {planos.map((plano) => (
-          <Card key={plano.id}>
+        {plans.map((plan) => (
+          <Card key={plan.id}>
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                {editandoId === plano.id ? (
+                {editingId === plan.id ? (
                   <>
-                    <Input value={editNome} onChange={e=>setEditNome(e.target.value)} className="w-36" />
-                    <Input value={editDescricao} onChange={e=>setEditDescricao(e.target.value)} className="w-56" />
-                    <Button size="sm" onClick={()=>salvarEdicao(plano.id)}>Salvar</Button>
-                    <Button size="sm" variant="outline" onClick={()=>setEditandoId(null)}>Cancelar</Button>
+                    <Input value={editName} onChange={e=>setEditName(e.target.value)} className="w-36" />
+                    <Input value={editDescription} onChange={e=>setEditDescription(e.target.value)} className="w-56" />
+                    <Input value={editClassLimit} type="number" onChange={e=>setEditClassLimit(parseInt(e.target.value))} className="w-24" />
+                    <Button size="sm" onClick={()=>saveEdition(plan.id)}>Salvar</Button>
+                    <Button size="sm" variant="outline" onClick={()=>setEditingId("")}>Cancelar</Button>
                   </>
                 ) : (
                   <>
-                    <span>{plano.name}</span>
-                    <span className="text-gray-500 text-xs">{plano.description}</span>
+                    <span>{plan.name}</span>
+                    <span className="text-gray-500 text-xs">{plan.description}</span>
+                    <span className="text-gray-500 text-xs">Limite de aulas: {plan.classLimit}</span>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={()=>handleEdit(plano.id)}>Editar</Button>
-                      <Button size="sm" variant="destructive" onClick={()=>handleDelete(plano.id)}>Excluir</Button>
+                      <Button size="sm" variant="outline" onClick={()=>handleEdit(plan.id)}>Editar</Button>
+                      <Button size="sm" variant="destructive" onClick={()=>handleDelete(plan.id)}>Excluir</Button>
                     </div>
                   </>
                 )}
