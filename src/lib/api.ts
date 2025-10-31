@@ -1,4 +1,4 @@
-import { BookingResult, Class, CreateBookingRequest, PlanType, Student, StudentReport } from "@/types";
+import { Booking, BookingResult, Class, CreateBookingRequest, PlanType, Student, StudentReport } from "@/types";
 import { ClassType as AppClassType } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5218/api";
@@ -15,18 +15,9 @@ class ApiClient {
 
     if (!response.ok) {
       let message = `HTTP ${response.status}`;
-      try {
         const data = await response.json();
         if (data?.message) message = data.message;
-      } catch {
-        // ignore parse errors
-      }
       throw new Error(message);
-    }
-
-    if (response.status === 204) {
-      // No content
-      return undefined as unknown as T;
     }
 
     return response.json() as Promise<T>;
@@ -49,10 +40,23 @@ class ApiClient {
     name: string;
     email?: string;
     phone?: string;
-    planTypeId: number;
+    planTypeId: string;
   }): Promise<Student> {
     return this.request<Student>("/students", {
       method: "POST",
+      body: JSON.stringify(student),
+    });
+  }
+
+  async updateStudent(id: string, student: {
+    name: string;
+    email?: string;
+    phone?: string;
+    planTypeId: string;
+    isActive?: boolean;
+  }): Promise<Student> {
+    return this.request<Student>(`/students/${id}`, {
+      method: "PUT",
       body: JSON.stringify(student),
     });
   }
@@ -84,13 +88,13 @@ class ApiClient {
   }): Promise<Class> {
     return this.request<Class>("/classes", {
       method: "POST",
-      body: JSON.stringify({ dto: input })
+      body: JSON.stringify(input)
     });
   }
 
   // Bookings
-  async createBooking(request: CreateBookingRequest): Promise<BookingResult> {
-    return this.request<BookingResult>("/bookings", {
+  async createBooking(request: CreateBookingRequest): Promise<Booking> {
+    return this.request<Booking>("/bookings", {
       method: "POST",
       body: JSON.stringify(request),
     });
@@ -115,19 +119,19 @@ class ApiClient {
   async getPlanTypes(): Promise<PlanType[]> {
     return this.request<PlanType[]>("/plan-types");
   }
-  async createPlanType(data: { name: string; description?: string }): Promise<PlanType> {
+  async createPlanType(data: { name: string; description?: string, classLimit: number }): Promise<PlanType> {
     return this.request<PlanType>("/plan-types", {
       method: "POST",
       body: JSON.stringify(data)
     });
   }
-  async updatePlanType(id: number, data: { name: string; description?: string }): Promise<PlanType> {
+  async updatePlanType(id: string, data: { name: string; description?: string, classLimit: number }): Promise<PlanType> {
     return this.request<PlanType>(`/plan-types/${id}`, {
       method: "PUT",
       body: JSON.stringify(data)
     });
   }
-  async deletePlanType(id: number): Promise<void> {
+  async deletePlanType(id: string): Promise<void> {
     return this.request<void>(`/plan-types/${id}`, { method: "DELETE" });
   }
 
@@ -142,13 +146,13 @@ class ApiClient {
       body: JSON.stringify(data)
     });
   }
-  async updateClassType(id: number, data: { name: string; description?: string }): Promise<AppClassType> {
+  async updateClassType(id: string, data: { name: string; description?: string, classLimit: number }): Promise<AppClassType> {
     return this.request<AppClassType>(`/class-types/${id}`, {
       method: "PUT",
       body: JSON.stringify(data)
     });
   }
-  async deleteClassType(id: number): Promise<void> {
+  async deleteClassType(id: string): Promise<void> {
     return this.request<void>(`/class-types/${id}`, { method: "DELETE" });
   }
 
