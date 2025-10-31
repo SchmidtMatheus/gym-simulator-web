@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { api } from "@/lib/api";
 import { ClassType as AppClassType, Class } from "@/types";
 import { Calendar, PlusCircle, Users } from "lucide-react";
@@ -14,7 +20,6 @@ export default function ClassesPage() {
   const [classes, setClasses] = useState<Class[]>([]);
   const [classTypes, setClassTypes] = useState<AppClassType[]>([]);
   const [loading, setLoading] = useState(true);
-  // form state
   const [classTypeId, setClassTypeId] = useState<string>("");
   const [dateTime, setDateTime] = useState("");
   const [duration, setDuration] = useState(60);
@@ -48,7 +53,7 @@ export default function ClassesPage() {
     try {
       await api.createClass({
         classTypeId: classTypeId,
-        scheduledAt: new Date(dateTime).toISOString(),
+        scheduledAt: dateTime,
         durationMinutes: duration,
         maxCapacity: capacity,
         isActive: true,
@@ -94,7 +99,9 @@ export default function ClassesPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {classTypes.map((type) => (
-                      <SelectItem value={type.id.toString()} key={type.id}>{type?.name}</SelectItem>
+                      <SelectItem value={type.id.toString()} key={type.id}>
+                        {type?.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -115,7 +122,9 @@ export default function ClassesPage() {
                     min={15}
                     step={5}
                     value={duration}
-                    onChange={(e) => setDuration(parseInt(e.target.value || '0'))}
+                    onChange={(e) =>
+                      setDuration(parseInt(e.target.value || "0"))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -124,12 +133,17 @@ export default function ClassesPage() {
                     type="number"
                     min={1}
                     value={capacity}
-                    onChange={(e) => setCapacity(parseInt(e.target.value || '0'))}
+                    onChange={(e) =>
+                      setCapacity(parseInt(e.target.value || "0"))
+                    }
                   />
                 </div>
               </div>
-              <Button type="submit" disabled={submitting || !classTypeId || !dateTime}>
-                {submitting ? 'Criando...' : 'Criar Aula'}
+              <Button
+                type="submit"
+                disabled={submitting || !classTypeId || !dateTime}
+              >
+                {submitting ? "Criando..." : "Criar Aula"}
               </Button>
             </form>
           </CardContent>
@@ -142,14 +156,23 @@ export default function ClassesPage() {
           <CardContent>
             <div className="space-y-3">
               {classes.map((c) => (
-                <div key={c.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div
+                  key={c.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-500" />
-                      <span className="font-medium">{c.classTypeName ?? "N/A"}</span>
+                      <span className="font-medium">
+                        {c.classTypeName ?? "N/A"}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600">{new Date(c.scheduledAt).toLocaleString('pt-BR')}</p>
-                    <p className="text-xs text-gray-500">Duração: {c.durationMinutes}min</p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(c.scheduledAt).toLocaleString("pt-BR")}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Duração: {c.durationMinutes}min
+                    </p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-2">
@@ -158,7 +181,9 @@ export default function ClassesPage() {
                         {c.currentParticipants}/{c.maxCapacity}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">{c.isCancelled ? 'Cancelada' : 'Ativa'}</span>
+                    <span className="text-xs text-gray-500">
+                      {c.isCancelled ? "Cancelada" : "Ativa"}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -169,5 +194,3 @@ export default function ClassesPage() {
     </div>
   );
 }
-
-

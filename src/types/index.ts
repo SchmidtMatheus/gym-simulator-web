@@ -11,7 +11,7 @@ export interface PlanType {
   id: string;
   name: string;
   description?: string;
-  monthlyClassLimit: number;
+  classLimit: number;
 }
 
 export interface ClassType {
@@ -48,8 +48,15 @@ export interface StudentReport {
   studentName: string;
   email: string;
   totalClassesThisMonth: number;
-  mostFrequentClassTypes: ClassType[]
+  mostFrequentClassTypes: ClassTypePreference[]
   reportDate: string;
+}
+
+export interface ClassTypePreference {
+  classTypeId: string;
+  classTypeName: string;
+  percentage: number;
+  bookingCount: number;
 }
 
 export interface CreateBookingRequest {
