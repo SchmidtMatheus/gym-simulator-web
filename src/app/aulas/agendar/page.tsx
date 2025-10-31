@@ -61,12 +61,14 @@ export default function SchedulePage() {
         classId: selectedClass,
       });
 
+      const isSuccess = result?.id ? true : false;
+
       setResult({
-        success: result.success,
-        message: result.message,
+        success: isSuccess,
+        message: (isSuccess ? "Agendamento realizado com sucesso" : "Falha ao realizar agendamento"),
       });
 
-      if (result.success) {
+      if (isSuccess) {
         setSelectedStudent("");
         setSelectedClass("");
         loadData();
