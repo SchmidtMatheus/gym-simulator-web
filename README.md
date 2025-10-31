@@ -25,7 +25,7 @@ npm install
 
 ### 2) Configurar variáveis de ambiente
 
-### Caso use a porta padrão do projeto gym-simulator (back-end), pode desconsiderar e pular para o tópico 3.
+- Caso use a porta padrão do projeto gym-simulator (back-end - `http://localhost:5218/api`), pode desconsiderar e pular para o tópico 3.
 
 Crie um arquivo `.env.local` na raiz com a URL da API .NET (ou outro backend compatível):
 
