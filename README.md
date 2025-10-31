@@ -25,6 +25,8 @@ npm install
 
 ### 2) Configurar variáveis de ambiente
 
+### Caso use a porta padrão do projeto gym-simulator (back-end), pode desconsiderar e pular para o tópico 3.
+
 Crie um arquivo `.env.local` na raiz com a URL da API .NET (ou outro backend compatível):
 
 ```bash
@@ -52,7 +54,6 @@ npm start
   - `page.tsx`: página inicial (hub) com métricas e atalhos
   - `alunos/`: páginas de alunos (lista, novo, detalhes)
   - `aulas/`: páginas de aulas (lista/criação) e `aulas/agendar` para agendamentos
-  - `relatorios/`: relatórios por aluno
 - `src/components/`
   - `dashboard/sidebar.tsx`: navegação lateral
   - `ui/`: componentes básicos (button, card, select, etc.)
