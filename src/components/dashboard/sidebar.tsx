@@ -12,7 +12,6 @@ const navigation = [
   { name: "Aulas", href: "/aulas", icon: Calendar },
   { name: "Planos", href: "/planos", icon: BadgePercent },
   { name: "Tipos de Aula", href: "/tipos-aula", icon: Layers },
-  { name: "Relatórios", href: "/relatorios", icon: BarChart3 },
 ];
 
 export function Sidebar() {

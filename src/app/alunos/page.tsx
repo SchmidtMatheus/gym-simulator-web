@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
+import { getPlanTypeColor } from "@/lib/utils";
 import { Student, StudentReport } from "@/types";
 import { BarChart3, Plus } from "lucide-react";
 import Link from "next/link";
@@ -41,19 +42,6 @@ export default function StudentsPage() {
       console.error("Erro ao carregar alunos:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getPlanTypeColor = (planType: string) => {
-    switch (planType) {
-      case "Anual":
-        return "bg-green-100 text-green-800";
-      case "Trimestral":
-        return "bg-blue-100 text-blue-800";
-      case "Mensal":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -106,20 +94,45 @@ export default function StudentsPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                {report && (
+                {report ? (
                   <div className="grid grid-cols-4 gap-4 text-sm">
                     <div>
                       <p className="font-medium">Utilizadas</p>
                       <p>{report.totalClassesThisMonth} aulas</p>
                     </div>
-                    <div>
-                      <p className="font-medium">Preferências</p>
-                      <p className="text-xs">
-                        {report.mostFrequentClassTypes.slice(0, 2).join(", ") ||
-                          "Nenhuma aula"}
-                      </p>
+
+                    <div className="col-span-3">
+                      <p className="font-medium mb-2">Preferências</p>
+                      {report.mostFrequentClassTypes.length > 0 ? (
+                        <div className="space-y-2">
+                          {report.mostFrequentClassTypes.map((type) => (
+                            <div key={type.classTypeId}>
+                              <div className="flex justify-between text-xs">
+                                <span className="font-medium pb-0.5">
+                                  {type.classTypeName}
+                                </span>
+                                <span>{type.percentage}%</span>
+                              </div>
+                              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-blue-500 rounded-full"
+                                  style={{ width: `${type.percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500">
+                          Nenhuma aula registrada
+                        </p>
+                      )}
                     </div>
                   </div>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Relatório não disponível
+                  </p>
                 )}
               </CardContent>
             </Card>

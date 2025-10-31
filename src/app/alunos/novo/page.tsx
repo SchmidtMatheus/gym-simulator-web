@@ -34,7 +34,7 @@ export default function NewStudentPage() {
     try {
       await api.createStudent({
         name,
-        planTypeId: parseInt(plan),
+        planTypeId: plan,
         email,
         phone,
       });
