@@ -20,8 +20,16 @@ class ApiClient {
       throw new Error(message);
     }
 
-    return response.json() as Promise<T>;
+    const text = await response.text();
+    if (!text) return {} as T;
+
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      return text as unknown as T;
+    }
   }
+
 
   // Students
   async getStudents(page: number = 1, pageSize: number = 10): Promise<{ items: Student[], totalCount: number, pageNumber: number, pageSize: number }> {
